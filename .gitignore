@@ -3,6 +3,7 @@
 
 bazel-*
 *.swp
+*.swo
 *.o
 *.log
 *.so
@@ -18,3 +19,5 @@ build
 
 *.pb.h
 *.pb.cc
+
+tags

@@ -13,8 +13,8 @@
 
 include(FetchContent)
 
-set(TRPC_CPP_GIT_URL https://github.com/trpc-group/trpc-cpp.git)
-set(TRPC_CPP_GIT_TAG main)
+set(TRPC_CPP_GIT_URL https://github.com/city-invoker/trpc-cpp.git)
+set(TRPC_CPP_GIT_TAG v1.0.0)
 
 FetchContent_Declare(
     trpc-cpp
