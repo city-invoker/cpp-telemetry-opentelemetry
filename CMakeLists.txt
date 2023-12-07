@@ -15,12 +15,20 @@ cmake_minimum_required(VERSION 3.14)
 
 project(trpc-cpp-plugin-telemetry-opentelemetry)
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE DEBUG)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-message("Cloning trpc-cpp, please waiting...")
-include(com_github_trpc_cpp)
+# include *.h
+set(TRPC_INSTALL_PATH /usr/local/trpc-cpp/trpc)
+include(${TRPC_INSTALL_PATH}/cmake/config/trpc_config.cmake)
+include(${TRPC_INSTALL_PATH}/cmake/tools/trpc_utils.cmake)
+include_directories(${INCLUDE_INSTALL_PATHS})
+
+#message("Cloning trpc-cpp, please waiting...")
+#include(com_github_trpc_cpp)
 
 message("Cloning opentelemetry_cpp sdk, please waiting...")
 include(com_github_opentelemetry_cpp)
@@ -40,13 +48,31 @@ add_library(trpc_cpp_plugin_telemetry_opentelemetry
               ${SRC_FILES}
               ${OUT_OPENTELEMETRY_PROTO_TRPC_PB_PROTO_FILES})
 
-target_link_libraries(
-  trpc_cpp_plugin_telemetry_opentelemetry PRIVATE
-  ${TARGET_LINK_LIBS}
-)
+# lib directories
+link_directories(${LIBRARY_INSTALL_PATHS})
 
 target_include_directories(
   trpc_cpp_plugin_telemetry_opentelemetry PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${TARGET_INCLUDE_PATHS}
 )
+
+target_link_libraries(
+  trpc_cpp_plugin_telemetry_opentelemetry PRIVATE
+  ${TARGET_LINK_LIBS}
+)
+
+# install *.h *.hpp
+set(OPTL_INSTALL_PATH "${TRPC_INSTALL_PATH}/plugins/optl")
+install(DIRECTORY ${CMAKE_BINARY_DIR}/trpc/
+            COMPONENT DEVEL
+            DESTINATION ${OPTL_INSTALL_PATH}/include/
+            FILES_MATCHING PATTERN "*.h"
+                           PATTERN "*.hpp")
+
+# install .a
+install(DIRECTORY ${CMAKE_BINARY_DIR}/lib/
+            COMPONENT DEVEL
+            DESTINATION ${OPTL_INSTALL_PATH}/lib/
+            FILES_MATCHING PATTERN "*.a")
+
