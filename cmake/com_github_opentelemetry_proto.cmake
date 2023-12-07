@@ -10,16 +10,7 @@ FetchContent_Declare(
     SOURCE_DIR            ${CMAKE_CURRENT_SOURCE_DIR}/cmake_third_party/com_github_opentelemetry_proto
 )
 
-# 设置tRPC-Cpp的安装位置
-set(TRPC_INSTALL_PATH /usr/local/trpc-cpp/trpc)
 
-## 加载tRPC-Cpp头文件及库路径
-include(${TRPC_INSTALL_PATH}/cmake/config/trpc_config.cmake)
-#include_directories("${TRPC_INSTALL_PATH}/include/")
-## 设置proto文件桩代码生成工具的路径 - 具体使用方式见相关章节
-#include(${TRPC_INSTALL_PATH}/cmake/tools/trpc_utils.cmake)
-set(PROTOBUF_PROTOC_EXECUTABLE ${TRPC_INSTALL_PATH}/bin/protoc)
-set(TRPC_TO_CPP_PLUGIN ${TRPC_INSTALL_PATH}/bin/trpc_cpp_plugin)
 
 
 FetchContent_GetProperties(com_github_opentelemtry_proto)
@@ -35,8 +26,8 @@ if(NOT com_github_opentelemtry_proto_POPULATED)
     target_link_libraries(trpc_opentelemetry_proto trpc_protobuf)
     target_include_directories(trpc_opentelemetry_proto PUBLIC ${com_github_opentelemtry_proto_SOURCE_DIR})
     set(TARGET_LINK_LIBS ${TARGET_LINK_LIBS} trpc_opentelemetry_proto)
-    set(TARGET_INCLUDE_PATHS  ${TARGET_INCLUDE_PATHS} ${com_github_opentelemtry_proto_SOURCE_DIR})
-    message("wtf is target include path:${TARGET_INCLUDE_PATHS}")
+
+    set(OTPL_PROTO_INCLUDE_PATH ${com_github_opentelemtry_proto_SOURCE_DIR} PARENT_SCOPE)
     # Generating trpc.pb.h and trpc.pb.cc using tools provided in tRPC-Cpp
     set(OUT_OPENTELEMETRY_PROTO_TRPC_PB_PROTO_FILES 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/trpc/telemetry/opentelemetry/logging/logs_service.trpc.pb.h

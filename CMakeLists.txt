@@ -25,6 +25,10 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(TRPC_INSTALL_PATH /usr/local/trpc-cpp/trpc)
 include(${TRPC_INSTALL_PATH}/cmake/config/trpc_config.cmake)
 include(${TRPC_INSTALL_PATH}/cmake/tools/trpc_utils.cmake)
+set(PROTOBUF_PROTOC_EXECUTABLE ${TRPC_INSTALL_PATH}/bin/protoc)
+set(TRPC_TO_CPP_PLUGIN ${TRPC_INSTALL_PATH}/bin/trpc_cpp_plugin)
+
+
 include_directories(${INCLUDE_INSTALL_PATHS})
 
 #message("Cloning trpc-cpp, please waiting...")
@@ -32,9 +36,12 @@ include_directories(${INCLUDE_INSTALL_PATHS})
 
 message("Cloning opentelemetry_cpp sdk, please waiting...")
 include(com_github_opentelemetry_cpp)
+include_directories(${TARGET_INCLUDE_PATHS})
 
 message("Cloning opentelemetry_proto, please waitint...")
 include(com_github_opentelemetry_proto)
+include_directories(${OPTL_PROTO_INCLUDE_PATH})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Build plugin
 file(GLOB_RECURSE SRC_FILES ./trpc/*.cc)
@@ -51,11 +58,13 @@ add_library(trpc_cpp_plugin_telemetry_opentelemetry
 # lib directories
 link_directories(${LIBRARY_INSTALL_PATHS})
 
-target_include_directories(
-  trpc_cpp_plugin_telemetry_opentelemetry PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${TARGET_INCLUDE_PATHS}
-)
+#target_include_directories(
+#  trpc_cpp_plugin_telemetry_opentelemetry PUBLIC
+#  ${CMAKE_CURRENT_SOURCE_DIR}
+#  ${TARGET_INCLUDE_PATHS}
+#  ${OTPL_PROTO_INCLUDE_PATH}
+#)
+
 
 target_link_libraries(
   trpc_cpp_plugin_telemetry_opentelemetry PRIVATE

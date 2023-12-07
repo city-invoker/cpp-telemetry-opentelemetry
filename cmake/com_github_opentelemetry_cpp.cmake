@@ -48,7 +48,8 @@ set(TARGET_INCLUDE_PATHS  ${TARGET_INCLUDE_PATHS}
                           ${com_github_opentelemetry_cpp_SOURCE_DIR}/api/include
                           ${com_github_opentelemetry_cpp_SOURCE_DIR}/sdk/include
                           ${com_github_opentelemetry_cpp_SOURCE_DIR}/ext/include
-                          ${com_github_opentelemetry_cpp_SOURCE_DIR}/exporters/otlp/include)
+                          ${com_github_opentelemetry_cpp_SOURCE_DIR}/exporters/otlp/include
+                          PARENT_SCOPE)
 
 set(TARGET_LINK_LIBS ${TARGET_LINK_LIBS}
                      opentelemetry_sdk
