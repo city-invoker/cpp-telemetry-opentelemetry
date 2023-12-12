@@ -10,9 +10,6 @@ FetchContent_Declare(
     SOURCE_DIR            ${CMAKE_CURRENT_SOURCE_DIR}/cmake_third_party/com_github_opentelemetry_proto
 )
 
-
-
-
 FetchContent_GetProperties(com_github_opentelemtry_proto)
 if(NOT com_github_opentelemtry_proto_POPULATED)
     FetchContent_Populate(com_github_opentelemtry_proto)
@@ -23,6 +20,7 @@ if(NOT com_github_opentelemtry_proto_POPULATED)
                                 ${PROTOBUF_PROTOC_EXECUTABLE}
                                 ${com_github_opentelemtry_proto_SOURCE_DIR})
     add_library(trpc_opentelemetry_proto ${OPENTELEMETRY_PROTO_OUT_PB_SRCS_FILES})
+    set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lib/")
     target_link_libraries(trpc_opentelemetry_proto trpc_protobuf)
     target_include_directories(trpc_opentelemetry_proto PUBLIC ${com_github_opentelemtry_proto_SOURCE_DIR})
     set(TARGET_LINK_LIBS ${TARGET_LINK_LIBS} trpc_opentelemetry_proto)

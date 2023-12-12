@@ -23,16 +23,14 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # include *.h
 set(TRPC_INSTALL_PATH /usr/local/trpc-cpp/trpc)
+set(CMAKE_INSTALL_PREFIX  "${TRPC_INSTALL_PATH}/plugins/optl/")
+
 include(${TRPC_INSTALL_PATH}/cmake/config/trpc_config.cmake)
 include(${TRPC_INSTALL_PATH}/cmake/tools/trpc_utils.cmake)
 set(PROTOBUF_PROTOC_EXECUTABLE ${TRPC_INSTALL_PATH}/bin/protoc)
 set(TRPC_TO_CPP_PLUGIN ${TRPC_INSTALL_PATH}/bin/trpc_cpp_plugin)
 
-
 include_directories(${INCLUDE_INSTALL_PATHS})
-
-#message("Cloning trpc-cpp, please waiting...")
-#include(com_github_trpc_cpp)
 
 message("Cloning opentelemetry_cpp sdk, please waiting...")
 include(com_github_opentelemetry_cpp)
@@ -41,47 +39,34 @@ include_directories(${TARGET_INCLUDE_PATHS})
 message("Cloning opentelemetry_proto, please waitint...")
 include(com_github_opentelemetry_proto)
 include_directories(${OPTL_PROTO_INCLUDE_PATH})
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Build plugin
 file(GLOB_RECURSE SRC_FILES ./trpc/*.cc)
-
 file(GLOB_RECURSE TEST_FILES ./trpc/*test.cc
                              ./trpc/telemetry/opentelemetry/testing/*)
-
 list(REMOVE_ITEM SRC_FILES ${TEST_FILES})
 
+set(TARGET trpc_cpp_plugin_telemetry_opentelemetry)
 add_library(trpc_cpp_plugin_telemetry_opentelemetry
               ${SRC_FILES}
               ${OUT_OPENTELEMETRY_PROTO_TRPC_PB_PROTO_FILES})
 
 # lib directories
 link_directories(${LIBRARY_INSTALL_PATHS})
+target_link_libraries(${TARGET} PRIVATE ${TARGET_LINK_LIBS})
 
-#target_include_directories(
-#  trpc_cpp_plugin_telemetry_opentelemetry PUBLIC
-#  ${CMAKE_CURRENT_SOURCE_DIR}
-#  ${TARGET_INCLUDE_PATHS}
-#  ${OTPL_PROTO_INCLUDE_PATH}
-#)
-
-
-target_link_libraries(
-  trpc_cpp_plugin_telemetry_opentelemetry PRIVATE
-  ${TARGET_LINK_LIBS}
-)
+set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/lib/")
 
 # install *.h *.hpp
-set(OPTL_INSTALL_PATH "${TRPC_INSTALL_PATH}/plugins/optl")
-install(DIRECTORY ${CMAKE_BINARY_DIR}/trpc/
-            COMPONENT DEVEL
-            DESTINATION ${OPTL_INSTALL_PATH}/include/
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/trpc/
+            DESTINATION include
             FILES_MATCHING PATTERN "*.h"
                            PATTERN "*.hpp")
 
 # install .a
-install(DIRECTORY ${CMAKE_BINARY_DIR}/lib/
-            COMPONENT DEVEL
-            DESTINATION ${OPTL_INSTALL_PATH}/lib/
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/
+            DESTINATION lib
             FILES_MATCHING PATTERN "*.a")
 
